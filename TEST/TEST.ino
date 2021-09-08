@@ -5,9 +5,11 @@
 
 #define DATA_PIN 3 //设置在Arduino上的串口
 
-CRGB leds[NUM_LEDS];
+CRGB leds[NUM_LEDS]; //建立光带leds, 色彩空间为RGB
 
 int ledNum;
+
+//每帧动画
 int black[] = {0, 1, 2, 3, 7, 8, 14, 15, 22, 23, 30, 31, 38, 39, 46, 47, 54, 55, 61, 62, 66, 67, 68, 69}; //24
 int ROW1[] = {13, 16, 48, 60}; //4
 int ROW2[] = {4, 12, 17, 29, 45, 49, 59, 63}; //8
@@ -18,31 +20,28 @@ int ROW6[] = {21, 25, 35, 41, 53}; //5
 int ROW7[] = {24, 36, 40}; //3
 int ROW8[] = {37}; //1
 
-//color chart
-CRGB myRGBcolor(0,0,0); 
+CRGB myRGBcolor(0,0,0); //用来赋值 
 
+//色彩表
 int PINK[] = {255, 64, 64};
 int DeepSkyBlue2[] = {0, 178, 238};
 
-//loop arguments
-
-//get length
+//得到每个part1的灯串个数
 template<class T,size_t N>
 int Length(T (&array)[N]){
-    Serial.print("A1:");
-    Serial.println(sizeof(array));
-    Serial.print("A2:");
-    Serial.println(sizeof(T));
-    Serial.print("R:");
-    Serial.println(sizeof(array) / sizeof(T));    
+    // 用于debug
+    // Serial.print("A1:");
+    // Serial.println(sizeof(array));
+    // Serial.print("A2:");
+    // Serial.println(sizeof(T));
+    // Serial.print("R:");
+    // Serial.println(sizeof(array) / sizeof(T));    
     return sizeof(array) / sizeof(T);
 }
 
-
-//点亮对应灯串
+//点亮对应灯串：
 void OnLightsOrder_1(int* array, int ledNum, int* RGB){
       for (int i = 0; i < ledNum; i++){
-        //leds[array[i]] = CRGB::DarkBlue;
         leds[array[i]] = myRGBcolor.r = RGB[0];
         Serial.print("R:");
         Serial.println(RGB[0]);
@@ -60,7 +59,6 @@ void OnLightsOrder_1(int* array, int ledNum, int* RGB){
 
 void OnLightsOrder_2(int* array, int ledNum, int* RGB){
       for (int i = ledNum - 1; i >= 0; i--){
-        //leds[array[i]] = CRGB::DarkBlue;
         leds[array[i]] = myRGBcolor.r = RGB[0];
         Serial.print("R:");
         Serial.println(RGB[0]);
@@ -76,23 +74,6 @@ void OnLightsOrder_2(int* array, int ledNum, int* RGB){
     } 
 }
 
-//void OnLights(int* array, int ledNum, int* RGB)
-
-//template<class T,size_t N>
-//unsigned int getLength(T (&array)[N]){
-//    Serial.print("A1:");
-//    Serial.println(sizeof(array));
-//    Serial.print("A2:");
-//    Serial.println(sizeof(T));
-//    Serial.print("R:");
-//    Serial.println(sizeof(array) / sizeof(T));    
-//    return sizeof(array) / sizeof(T);
-//}
-
-//void start(){
-//  
-//}
-
 void setup() {
   Serial.begin(9600); //初始化波特率
   Serial.println("Get Start!");  
@@ -100,39 +81,16 @@ void setup() {
   FastLED.setBrightness(50); //设置灯的亮度，最大为255
   //FastLED.clear(); //熄灭所有的灯带，目前该library有点小问题，可能是刷新率的原因
   //+=========PART1==========+
-  fill_solid(leds, NUM_LEDS, CRGB::Black);
-
-  //+=========PART2==========+
-  
-
-
-//    for (int i = 0; i < 24; i++){
-//        leds[black[i]] = CRGB::DarkBlue;
-//    } 
-//  for (int i = 0; i < 24; i++){
-//    Serial.println(RED[0][1]);
-//  }
-//    for (int i = 0; i < 8; i++){
-//      Serial.println(i);       
-//      Serial.println("============");
-//      Serial.println(getLength(RED[i]));
-//      Serial.println("------------");
-//      for (int k = 0; k < getLength(RED[i]); k++){
-//          Serial.println(RED[i][k]);  
-//          leds[RED[i][k]] = CRGB::DarkBlue;
-//      }
-//      Serial.println("------------"); 
-//    }
-   Serial.println("Done!");  
+  fill_solid(leds, NUM_LEDS, CRGB::Black); //熄灭所有的灯带
+  Serial.println("Done!");  
 }
 
 void loop() {
   //on black part
   ledNum = ::Length(black);
-//  Serial.println(::Length(black));
   OnLightsOrder_2(black, ledNum, DeepSkyBlue2);
 
-//on red part
+  //on red part
   ledNum = ::Length(ROW1);
   OnLightsOrder_2(ROW1, ledNum, PINK);
 
@@ -156,32 +114,4 @@ void loop() {
 
   ledNum = ::Length(ROW8);
   OnLightsOrder_2(ROW8, ledNum, PINK);
-  
-    //fill_solid(leds, 3, CRGB::Red);
-
-    //set pupil
-//    for (int i = 0; i < 24; i++){
-//        leds[black[i]] = CRGB::DarkBlue;
-//    } 
-//
-//    for (int i = 0; i < 8; i++){
-//        Serial.println(i);        
-//      for (int k = 0; k < getLength(RED[i]); k++){
-//          Serial.println(RED[i][k]);  
-//          leds[RED[i][k]] = CRGB::DarkBlue;
-//      }
-//    }
-    
-//    for(int i=50; i<NUM_LEDS; i++){
-//        leds[i] = CHSV(160, 255, 128);
-//        FastLED.show();
-//        delay(100);
-//        leds[i] = CHSV(0,0,0);
-//        FastLED.show();
-//    }
-
-//        leds[50] = CRGB::AliceBlue;
-//         FastLED.show();
-//        delay(100);
-//        FastLED.clear();
 }
